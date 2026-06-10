@@ -1,0 +1,49 @@
+# ─── Core ────────────────────────────────────────────────────────
+fastapi==0.136.3
+uvicorn==0.49.0
+pydantic==2.13.4
+python-dotenv==1.2.2
+httpx==0.28.1
+
+# ─── LangGraph & LangChain (compatible set) ─────────────────────
+langgraph==1.2.4
+langchain==1.3.4
+langchain-community==0.4.2
+langchain-core==1.4.2
+langchain-anthropic==1.4.4
+langchain-ollama==1.1.0
+
+# ─── ML / Sentiment ──────────────────────────────────────────────
+transformers==5.10.2
+tokenizers==0.22.2
+torch==2.12.0
+sentence-transformers==5.5.1
+
+# ─── Financial Data Sources ──────────────────────────────────────
+yfinance==1.4.1
+sec-edgar-downloader==5.1.0
+sec-api==1.0.36
+finnhub-python==2.4.28
+praw==7.8.2
+newsapi-python==0.2.7
+tavily-python==0.7.25
+
+# ─── Vector DB ───────────────────────────────────────────────────
+qdrant-client==1.18.0
+
+# ─── Data ────────────────────────────────────────────────────────
+pandas==2.3.3
+numpy==2.4.6
+beautifulsoup4==4.15.0
+lxml==6.1.1
+pypdf==6.13.1
+tiktoken==0.13.0
+
+# ─── Frontend ────────────────────────────────────────────────────
+streamlit==1.58.0
+plotly==6.8.0
+
+# ─── Dev ─────────────────────────────────────────────────────────
+pytest==9.0.3
+black==26.5.1
+ruff==0.15.16
