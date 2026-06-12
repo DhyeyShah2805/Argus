@@ -1,0 +1,33 @@
+{
+  "total_tickers": 20,
+  "tickers_scored": 20,
+  "overall_accuracy_pct": 75.0,
+  "by_sector": {
+    "Tech": {
+      "accuracy_pct": 40.0,
+      "n": 5
+    },
+    "Finance": {
+      "accuracy_pct": 100.0,
+      "n": 5
+    },
+    "Healthcare": {
+      "accuracy_pct": 100.0,
+      "n": 5
+    },
+    "Consumer": {
+      "accuracy_pct": 60.0,
+      "n": 5
+    }
+  },
+  "by_confidence": {
+    "medium (60-74)": {
+      "accuracy_pct": 75.0,
+      "n": 20
+    }
+  },
+  "recommendation_distribution": {
+    "BUY": 19,
+    "HOLD": 1
+  }
+}

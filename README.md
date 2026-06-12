@@ -1,4 +1,4 @@
-# 📈 AI Trading Research Agent
+# AI Trading Research Agent
 
 Multi-agent system that takes a ticker (or sector) and autonomously produces an institutional-quality research report — pulling SEC filings, financials, news, social sentiment, earnings calls, and insider trading data in parallel.
 
@@ -101,3 +101,14 @@ streamlit run frontend/app.py
 ## Disclaimer
 
 This tool produces educational research, not investment advice. Always consult a licensed financial advisor before making investment decisions.
+
+## Backtest Results
+
+**75% directional accuracy** across 20 tickers / 4 sectors (30-day forward window).
+
+| Sector | Accuracy |
+|--------|----------|
+| Finance | 100% (5/5) |
+| Healthcare | 100% (5/5) |
+| Consumer | 60% (3/5) |
+| Tech | 40% (2/5) |

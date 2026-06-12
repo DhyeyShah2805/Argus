@@ -1,0 +1,182 @@
+[
+  {
+    "sector": "Tech",
+    "ticker": "AAPL",
+    "recommendation": "BUY",
+    "confidence": 70,
+    "actual_30d_return_pct": 3.98,
+    "aligned": true,
+    "iterations": 2
+  },
+  {
+    "sector": "Tech",
+    "ticker": "MSFT",
+    "recommendation": "BUY",
+    "confidence": 70,
+    "actual_30d_return_pct": -5.51,
+    "aligned": false,
+    "iterations": 2
+  },
+  {
+    "sector": "Tech",
+    "ticker": "NVDA",
+    "recommendation": "BUY",
+    "confidence": 70,
+    "actual_30d_return_pct": 3.52,
+    "aligned": true,
+    "iterations": 2
+  },
+  {
+    "sector": "Tech",
+    "ticker": "GOOGL",
+    "recommendation": "BUY",
+    "confidence": 70,
+    "actual_30d_return_pct": -6.69,
+    "aligned": false,
+    "iterations": 2
+  },
+  {
+    "sector": "Tech",
+    "ticker": "META",
+    "recommendation": "BUY",
+    "confidence": 65,
+    "actual_30d_return_pct": -6.86,
+    "aligned": false,
+    "iterations": 2
+  },
+  {
+    "sector": "Finance",
+    "ticker": "JPM",
+    "recommendation": "HOLD",
+    "confidence": 70,
+    "actual_30d_return_pct": 2.64,
+    "aligned": true,
+    "iterations": 2
+  },
+  {
+    "sector": "Finance",
+    "ticker": "BAC",
+    "recommendation": "BUY",
+    "confidence": 70,
+    "actual_30d_return_pct": 5.77,
+    "aligned": true,
+    "iterations": 2
+  },
+  {
+    "sector": "Finance",
+    "ticker": "GS",
+    "recommendation": "BUY",
+    "confidence": 70,
+    "actual_30d_return_pct": 15.56,
+    "aligned": true,
+    "iterations": 2
+  },
+  {
+    "sector": "Finance",
+    "ticker": "WFC",
+    "recommendation": "BUY",
+    "confidence": 70,
+    "actual_30d_return_pct": 4.21,
+    "aligned": true,
+    "iterations": 2
+  },
+  {
+    "sector": "Finance",
+    "ticker": "MS",
+    "recommendation": "BUY",
+    "confidence": 70,
+    "actual_30d_return_pct": 12.55,
+    "aligned": true,
+    "iterations": 2
+  },
+  {
+    "sector": "Healthcare",
+    "ticker": "JNJ",
+    "recommendation": "BUY",
+    "confidence": 70,
+    "actual_30d_return_pct": 6.63,
+    "aligned": true,
+    "iterations": 2
+  },
+  {
+    "sector": "Healthcare",
+    "ticker": "PFE",
+    "recommendation": "BUY",
+    "confidence": 60,
+    "actual_30d_return_pct": 1.19,
+    "aligned": true,
+    "iterations": 2
+  },
+  {
+    "sector": "Healthcare",
+    "ticker": "UNH",
+    "recommendation": "BUY",
+    "confidence": 70,
+    "actual_30d_return_pct": 10.78,
+    "aligned": true,
+    "iterations": 2
+  },
+  {
+    "sector": "Healthcare",
+    "ticker": "ABBV",
+    "recommendation": "BUY",
+    "confidence": 70,
+    "actual_30d_return_pct": 10.23,
+    "aligned": true,
+    "iterations": 2
+  },
+  {
+    "sector": "Healthcare",
+    "ticker": "MRK",
+    "recommendation": "BUY",
+    "confidence": 70,
+    "actual_30d_return_pct": 6.14,
+    "aligned": true,
+    "iterations": 2
+  },
+  {
+    "sector": "Consumer",
+    "ticker": "AMZN",
+    "recommendation": "BUY",
+    "confidence": 70,
+    "actual_30d_return_pct": -11.08,
+    "aligned": false,
+    "iterations": 2
+  },
+  {
+    "sector": "Consumer",
+    "ticker": "TSLA",
+    "recommendation": "BUY",
+    "confidence": 70,
+    "actual_30d_return_pct": 3.99,
+    "aligned": true,
+    "iterations": 2
+  },
+  {
+    "sector": "Consumer",
+    "ticker": "WMT",
+    "recommendation": "BUY",
+    "confidence": 70,
+    "actual_30d_return_pct": -7.85,
+    "aligned": false,
+    "iterations": 2
+  },
+  {
+    "sector": "Consumer",
+    "ticker": "KO",
+    "recommendation": "BUY",
+    "confidence": 70,
+    "actual_30d_return_pct": 5.14,
+    "aligned": true,
+    "iterations": 2
+  },
+  {
+    "sector": "Consumer",
+    "ticker": "NKE",
+    "recommendation": "BUY",
+    "confidence": 70,
+    "actual_30d_return_pct": 2.1,
+    "aligned": true,
+    "iterations": 2
+  }
+]
