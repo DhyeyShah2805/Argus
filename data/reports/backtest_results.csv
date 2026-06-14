@@ -1,12 +1,12 @@
 sector,ticker,recommendation,confidence,actual_30d_return_pct,aligned,iterations
-Tech,AAPL,BUY,70,3.98,True,2
+Tech,AAPL,BUY,80,4.02,True,2
 Tech,MSFT,BUY,70,-5.51,False,2
 Tech,NVDA,BUY,70,3.52,True,2
-Tech,GOOGL,BUY,70,-6.69,False,2
-Tech,META,BUY,65,-6.86,False,2
+Tech,GOOGL,BUY,80,-6.69,False,2
+Tech,META,BUY,70,-6.86,False,2
 Finance,JPM,HOLD,70,2.64,True,2
 Finance,BAC,BUY,70,5.77,True,2
-Finance,GS,BUY,70,15.56,True,2
+Finance,GS,HOLD,70,15.56,False,2
 Finance,WFC,BUY,70,4.21,True,2
 Finance,MS,BUY,70,12.55,True,2
 Healthcare,JNJ,BUY,70,6.63,True,2
@@ -15,7 +15,7 @@ Healthcare,UNH,BUY,70,10.78,True,2
 Healthcare,ABBV,BUY,70,10.23,True,2
 Healthcare,MRK,BUY,70,6.14,True,2
 Consumer,AMZN,BUY,70,-11.08,False,2
-Consumer,TSLA,BUY,70,3.99,True,2
+Consumer,TSLA,HOLD,55,3.99,True,2
 Consumer,WMT,BUY,70,-7.85,False,2
 Consumer,KO,BUY,70,5.14,True,2
 Consumer,NKE,BUY,70,2.1,True,2

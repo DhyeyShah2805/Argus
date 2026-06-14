@@ -1,16 +1,16 @@
 # Backtest Results
-*Generated: 2026-06-14 01:26 UTC*
+*Generated: 2026-06-12 21:20 UTC*
 
 ## Headline
 
-**Overall directional accuracy: 70.0%** (20/20 tickers scored)
+**Overall directional accuracy: 75.0%** (20/20 tickers scored)
 
 ## Accuracy by Sector
 
 | Sector | Accuracy | N |
 |--------|----------|---|
 | Tech | 40.0% | 5 |
-| Finance | 80.0% | 5 |
+| Finance | 100.0% | 5 |
 | Healthcare | 100.0% | 5 |
 | Consumer | 60.0% | 5 |
 
@@ -18,29 +18,27 @@
 
 | Confidence | Accuracy | N |
 |------------|----------|---|
-| high (75+) | 50.0% | 2 |
-| medium (60-74) | 70.6% | 17 |
-| low (<60) | 100.0% | 1 |
+| medium (60-74) | 75.0% | 20 |
 
 ## Recommendation Distribution
 
 | Recommendation | Count |
 |----------------|-------|
-| BUY | 17 |
-| HOLD | 3 |
+| BUY | 19 |
+| HOLD | 1 |
 
 ## Per-Ticker Details
 
 | Sector | Ticker | Rec | Conf | Actual 30d | Aligned |
 |--------|--------|-----|------|-----------|---------|
-| Tech | AAPL | BUY | 80% | +4.02% | ✓ |
+| Tech | AAPL | BUY | 70% | +3.98% | ✓ |
 | Tech | MSFT | BUY | 70% | -5.51% | ✗ |
 | Tech | NVDA | BUY | 70% | +3.52% | ✓ |
-| Tech | GOOGL | BUY | 80% | -6.69% | ✗ |
-| Tech | META | BUY | 70% | -6.86% | ✗ |
+| Tech | GOOGL | BUY | 70% | -6.69% | ✗ |
+| Tech | META | BUY | 65% | -6.86% | ✗ |
 | Finance | JPM | HOLD | 70% | +2.64% | ✓ |
 | Finance | BAC | BUY | 70% | +5.77% | ✓ |
-| Finance | GS | HOLD | 70% | +15.56% | ✗ |
+| Finance | GS | BUY | 70% | +15.56% | ✓ |
 | Finance | WFC | BUY | 70% | +4.21% | ✓ |
 | Finance | MS | BUY | 70% | +12.55% | ✓ |
 | Healthcare | JNJ | BUY | 70% | +6.63% | ✓ |
@@ -49,7 +47,7 @@
 | Healthcare | ABBV | BUY | 70% | +10.23% | ✓ |
 | Healthcare | MRK | BUY | 70% | +6.14% | ✓ |
 | Consumer | AMZN | BUY | 70% | -11.08% | ✗ |
-| Consumer | TSLA | HOLD | 55% | +3.99% | ✓ |
+| Consumer | TSLA | BUY | 70% | +3.99% | ✓ |
 | Consumer | WMT | BUY | 70% | -7.85% | ✗ |
 | Consumer | KO | BUY | 70% | +5.14% | ✓ |
 | Consumer | NKE | BUY | 70% | +2.10% | ✓ |

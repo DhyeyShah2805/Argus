@@ -23,6 +23,7 @@ from backend.sub_agents.social import social_agent
 from backend.sub_agents.earnings import earnings_agent
 from backend.sub_agents.insider import insider_agent
 from backend.sub_agents.competitor import competitor_agent
+from backend.agents.calibrator import calibrator_agent
 
 logger = logging.getLogger(__name__)
 MAX_ITERATIONS = int(os.getenv("MAX_CRITIQUE_ITERATIONS", 2))
@@ -42,6 +43,7 @@ def build_graph():
     # Top-level agents
     graph.add_node("orchestrator", orchestrator_agent)
     graph.add_node("synthesis", synthesis_agent)
+    graph.add_node("calibrator", calibrator_agent)
     graph.add_node("risk", risk_agent)
     graph.add_node("writer", report_writer)
 
@@ -64,7 +66,9 @@ def build_graph():
         graph.add_edge(sub, "synthesis")   # all converge to synthesis
 
     # Synthesis → Risk → conditional → Writer or loop
-    graph.add_edge("synthesis", "risk")
+    # Synthesis → Calibrator → Risk → conditional → Writer or loop
+    graph.add_edge("synthesis", "calibrator")
+    graph.add_edge("calibrator", "risk")
     graph.add_conditional_edges(
         "risk",
         should_loop,
