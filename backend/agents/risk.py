@@ -53,9 +53,18 @@ def risk_agent(state: ResearchState) -> dict:
     financials = state.get("financials_data", {})
     ratios = financials.get("ratios", {})
 
+    # Strip the calibrator's internal bookkeeping keys so they
+    # don't leak code-style strings (e.g. 'extremely_overvalued')
+    # into the LLM's critique.
+    INTERNAL_KEYS = {
+        "signal_flags", "calibration_reasoning", "calibration_applied",
+        "original_recommendation", "original_confidence",
+    }
+    clean_thesis = {k: v for k, v in thesis.items() if k not in INTERNAL_KEYS}
+
     prompt = RISK_PROMPT.format(
         ticker=state["ticker"],
-        thesis=json.dumps(thesis, indent=2),
+        thesis=json.dumps(clean_thesis, indent=2),
         pe=ratios.get("P/E (trailing)"),
         margin=ratios.get("Profit Margin"),
         growth=ratios.get("Revenue Growth (YoY)"),

@@ -94,12 +94,17 @@ def report_writer(state: ResearchState) -> dict:
     llm = get_llm(json_mode=False)
     financials = state.get("financials_data", {})
 
+    # Strip calibrator's internal keys before passing to writer
+    _internal = {"signal_flags", "calibration_reasoning", "calibration_applied",
+                 "original_recommendation", "original_confidence"}
+    _clean_thesis = {k: v for k, v in state.get("thesis", {}).items() if k not in _internal}
+
     prompt = REPORT_PROMPT.format(
         ticker=state["ticker"],
         company=financials.get("company_name", state["ticker"]),
         sector=financials.get("sector", "N/A"),
         date=datetime.utcnow().strftime("%Y-%m-%d"),
-        thesis=json.dumps(state.get("thesis", {}), indent=2),
+        thesis=json.dumps(_clean_thesis, indent=2),
         risk_critique=json.dumps(state.get("risk_critique", {}), indent=2),
         financials=json.dumps(financials.get("ratios", {}), indent=2),
         filings=state.get("filings_data", {}).get("summary", "N/A")[:1500],

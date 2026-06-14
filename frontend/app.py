@@ -8,7 +8,68 @@ import requests
 import yfinance as yf
 import plotly.graph_objects as go
 from datetime import datetime, timedelta
+import json
+from pathlib import Path
 
+
+def render_backtest_panel():
+    metrics_path = Path("data/reports/backtest_metrics.json")
+    if not metrics_path.exists():
+        st.info("No backtest results yet. Run `python -m scripts.backtest_eval` to generate them.")
+        return
+
+    metrics = json.loads(metrics_path.read_text())
+
+    # Headline metrics
+    c1, c2, c3 = st.columns(3)
+    c1.metric("Overall Accuracy", f"{metrics['overall_accuracy_pct']}%")
+    c2.metric("Tickers Scored", metrics["tickers_scored"])
+    rec_dist = metrics.get("recommendation_distribution", {})
+    dist_str = " / ".join(f"{k}:{v}" for k, v in rec_dist.items())
+    c3.metric("Rec Distribution", dist_str)
+
+    # Accuracy by sector — bar chart
+    by_sector = metrics.get("by_sector", {})
+    if by_sector:
+        sectors = list(by_sector.keys())
+        accuracies = [by_sector[s]["accuracy_pct"] for s in sectors]
+        counts = [by_sector[s]["n"] for s in sectors]
+
+        fig = go.Figure(data=[
+            go.Bar(
+                x=sectors,
+                y=accuracies,
+                text=[f"{a}%<br>(n={n})" for a, n in zip(accuracies, counts)],
+                textposition="auto",
+                marker_color=["#2563eb", "#16a34a", "#dc2626", "#ea580c"][:len(sectors)],
+            )
+        ])
+        fig.add_hline(
+            y=50, line_dash="dash", line_color="gray",
+            annotation_text="coin-flip baseline (50%)",
+            annotation_position="top right",
+        )
+        fig.update_layout(
+            title="Directional Accuracy by Sector",
+            yaxis_title="Accuracy (%)",
+            yaxis_range=[0, 105],
+            height=400,
+            showlegend=False,
+        )
+        st.plotly_chart(fig, use_container_width=True)
+
+    # Confidence band breakdown
+    by_conf = metrics.get("by_confidence", {})
+    if by_conf:
+        st.markdown("**Accuracy by Confidence Band**")
+        for band, m in by_conf.items():
+            st.write(f"- {band}: {m['accuracy_pct']}% (n={m['n']})")
+
+    st.caption(
+        "⚠️ Scoring uses a rolling 30-day forward window from the current date, "
+        "so results shift with market conditions. The system shows a BUY bias "
+        "corrected by a rule-based calibration layer. See BACKTEST_RESULTS.md for full analysis."
+    )
 BACKEND_URL = os.getenv("BACKEND_URL", "http://localhost:8000")
 
 st.set_page_config(
@@ -130,3 +191,7 @@ if run_button and ticker:
 
 elif run_button:
     st.warning("Enter a ticker first.")
+# ─── Backtest Performance ────────────────────────────────────────
+st.markdown("---")
+with st.expander("📊 View Backtest Performance", expanded=False):
+    render_backtest_panel()
