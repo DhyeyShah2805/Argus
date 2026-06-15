@@ -7,6 +7,8 @@ and produces a structured accuracy report.
 
 Run: python -m scripts.backtest_eval
 """
+from dotenv import load_dotenv
+load_dotenv()
 
 import asyncio
 import json

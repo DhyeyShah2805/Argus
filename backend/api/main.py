@@ -1,6 +1,8 @@
 """
 FastAPI Backend
 """
+from dotenv import load_dotenv
+load_dotenv()
 
 import logging
 from fastapi import FastAPI, HTTPException

@@ -50,22 +50,30 @@ def insider_agent(state: ResearchState) -> dict:
         notable = []
 
         for txn in transactions:
-            shares = txn.get("share", 0)
+            change = txn.get("change", 0)   # negative = sale, positive = purchase
             txn_code = txn.get("transactionCode", "")
-            # P = Purchase, S = Sale, A = Award
-            if txn_code in ("P", "A"):
-                buy_shares += abs(shares)
+
+            # Finnhub free tier often returns empty transactionCode,
+            # so we rely on the sign of `change` as the source of truth.
+            if change > 0:
+                buy_shares += change
                 buy_count += 1
-            elif txn_code == "S":
-                sell_shares += abs(shares)
+                direction = "buy"
+            elif change < 0:
+                sell_shares += abs(change)
                 sell_count += 1
+                direction = "sell"
+            else:
+                direction = "neutral"
 
             notable.append({
                 "name": txn.get("name"),
                 "date": txn.get("transactionDate"),
-                "shares": shares,
+                "change": change,
+                "shares_held_after": txn.get("share"),
                 "price": txn.get("transactionPrice"),
-                "code": txn_code,
+                "direction": direction,
+                "code": txn_code or "N/A",
             })
 
         # Signal interpretation
