@@ -66,29 +66,63 @@ def competitor_agent(state: ResearchState) -> dict:
 
 
 def _get_peers(ticker: str) -> list:
-    """Try Finnhub for peer list, else fallback to hand-coded sector peers."""
+    """
+    Peer discovery with curated overrides.
+
+    Free peer APIs (Finnhub) return unreliable results for major tickers —
+    e.g. AAPL returns storage/hardware names, not its real comps. For liquid
+    large-caps we use analyst-consensus peer groups; everything else falls
+    back to Finnhub's automated list, then a sector pool as last resort.
+    """
+    ticker = ticker.upper()
+
+    # 1. Curated peer groups for major names (free APIs unreliable here)
+    CURATED = {
+        "AAPL": ["MSFT", "GOOGL", "META", "NVDA", "AMZN"],
+        "MSFT": ["AAPL", "GOOGL", "AMZN", "ORCL", "CRM"],
+        "GOOGL": ["META", "MSFT", "AAPL", "AMZN", "NFLX"],
+        "META": ["GOOGL", "SNAP", "PINS", "MSFT", "NFLX"],
+        "NVDA": ["AMD", "AVGO", "INTC", "QCOM", "TSM"],
+        "AMZN": ["MSFT", "GOOGL", "WMT", "SHOP", "EBAY"],
+        "TSLA": ["F", "GM", "RIVN", "LCID", "NIO"],
+        "JPM": ["BAC", "WFC", "C", "GS", "MS"],
+        "BAC": ["JPM", "WFC", "C", "GS", "MS"],
+        "JNJ": ["PFE", "MRK", "ABBV", "LLY", "BMY"],
+        "PFE": ["JNJ", "MRK", "ABBV", "LLY", "BMY"],
+        "BA": ["LMT", "RTX", "GD", "NOC", "GE"],
+    }
+    if ticker in CURATED:
+        logger.info(f"[Competitor] {ticker}: curated peer group")
+        return CURATED[ticker]
+
+    # 2. Finnhub for everything else (automated long tail)
     finnhub_key = os.getenv("FINNHUB_API_KEY")
     if finnhub_key:
         try:
             fh = finnhub.Client(api_key=finnhub_key)
-            peers = fh.company_peers(ticker)
-            return [p for p in peers if p != ticker][:8]
+            peers = [p for p in fh.company_peers(ticker) if p != ticker]
+            if peers:
+                logger.info(f"[Competitor] {ticker}: Finnhub peers")
+                return peers[:6]
         except Exception as e:
-            logger.warning(f"[Competitor] Finnhub peers failed: {e}")
+            logger.warning(f"[Competitor] Finnhub failed: {e}")
 
-    # Fallback: use yfinance sector info to build minimal peer set
+    # 3. Last resort — curated sector pool by yfinance sector
     try:
-        info = yf.Ticker(ticker).info
-        sector = info.get("sector", "")
-        # Hardcoded mini peer map for common sectors
+        sector = yf.Ticker(ticker).info.get("sector", "")
         SECTOR_PEERS = {
-            "Technology": ["AAPL", "MSFT", "GOOGL", "META", "NVDA"],
-            "Communication Services": ["GOOGL", "META", "NFLX", "DIS", "T"],
-            "Consumer Cyclical": ["AMZN", "TSLA", "HD", "NKE", "SBUX"],
+            "Technology": ["AAPL", "MSFT", "GOOGL", "NVDA", "AVGO"],
+            "Communication Services": ["GOOGL", "META", "NFLX", "DIS", "TMUS"],
+            "Consumer Cyclical": ["AMZN", "TSLA", "HD", "NKE", "MCD"],
             "Financial Services": ["JPM", "BAC", "WFC", "GS", "MS"],
             "Healthcare": ["JNJ", "PFE", "UNH", "ABBV", "MRK"],
+            "Industrials": ["BA", "LMT", "RTX", "GD", "HON"],
         }
-        peers = SECTOR_PEERS.get(sector, [])
-        return [p for p in peers if p != ticker][:5]
+        pool = [p for p in SECTOR_PEERS.get(sector, []) if p != ticker]
+        if pool:
+            logger.info(f"[Competitor] {ticker}: sector pool ({sector})")
+            return pool[:5]
     except Exception:
-        return []
+        pass
+
+    return []
