@@ -54,6 +54,16 @@ async def research(request: ResearchRequest):
                 "mention_count": state.get("social_data", {}).get("mention_count"),
             },
             "insider_signal": state.get("insider_data", {}).get("signal"),
+            # ── NEW: expose peers + earnings for the dashboard tables ──
+            "peers": state.get("competitor_data", {}).get("peers", []),
+            "peer_avg_pe": state.get("competitor_data", {}).get("avg_peer_pe"),
+            "earnings": state.get("earnings_data", {}).get("recent_earnings", []),
+            "insider_detail": {
+                "buy_count": state.get("insider_data", {}).get("buy_count"),
+                "sell_count": state.get("insider_data", {}).get("sell_count"),
+                "shares_bought": state.get("insider_data", {}).get("shares_bought"),
+                "shares_sold": state.get("insider_data", {}).get("shares_sold"),
+            },
         }
     except Exception as e:
         logging.error(f"Research failed: {e}")

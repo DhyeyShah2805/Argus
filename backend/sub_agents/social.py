@@ -1,29 +1,22 @@
 """
 Social Sub-Agent
 ----------------
-Scrapes Reddit (r/wallstreetbets, r/investing, r/stocks)
-for ticker mentions in the last week.
-Scores aggregate sentiment + mention volume.
+Pulls recent messages from StockTwits ($TICKER streams),
+scores aggregate sentiment via FinBERT, and computes
+mention volume + bullish/bearish breakdown.
+
+StockTwits is purpose-built for stock chatter and needs no auth
+(public API), making it a better fit than Reddit for this use case.
 """
 
-import os
 import logging
-import praw
-from datetime import datetime, timedelta
+import httpx
 from backend.agents.state import ResearchState
 from backend.ml.finbert import batch_score
 
 logger = logging.getLogger(__name__)
 
-SUBREDDITS = ["wallstreetbets", "investing", "stocks", "SecurityAnalysis"]
-
-
-def _get_reddit():
-    return praw.Reddit(
-        client_id=os.getenv("REDDIT_CLIENT_ID", ""),
-        client_secret=os.getenv("REDDIT_CLIENT_SECRET", ""),
-        user_agent=os.getenv("REDDIT_USER_AGENT", "trading-research-agent"),
-    )
+STOCKTWITS_URL = "https://api.stocktwits.com/api/2/streams/symbol/{ticker}.json"
 
 
 def social_agent(state: ResearchState) -> dict:
@@ -31,54 +24,70 @@ def social_agent(state: ResearchState) -> dict:
     if not ticker:
         return {"social_data": {"status": "skipped"}}
 
-    logger.info(f"[Social] Searching Reddit for {ticker}")
+    logger.info(f"[Social] Pulling StockTwits for {ticker}")
 
     try:
-        reddit = _get_reddit()
-        all_posts = []
+        resp = httpx.get(
+            STOCKTWITS_URL.format(ticker=ticker),
+            timeout=10,
+            headers={"User-Agent": "Mozilla/5.0 (research agent)"},
+        )
 
-        for sub_name in SUBREDDITS:
-            try:
-                subreddit = reddit.subreddit(sub_name)
-                for submission in subreddit.search(ticker, time_filter="week", limit=10):
-                    all_posts.append({
-                        "title": submission.title,
-                        "score": submission.score,
-                        "num_comments": submission.num_comments,
-                        "subreddit": sub_name,
-                        "url": f"https://reddit.com{submission.permalink}",
-                        "created": datetime.fromtimestamp(submission.created_utc).isoformat(),
-                        "text": submission.selftext[:500] if submission.selftext else "",
-                    })
-            except Exception as e:
-                logger.warning(f"[Social] Subreddit {sub_name} failed: {e}")
+        if resp.status_code == 404:
+            return {"social_data": {"mention_count": 0, "status": "ticker not found on StockTwits"}}
+        if resp.status_code == 429:
+            return {"social_data": {"mention_count": 0, "status": "rate limited"}}
+        resp.raise_for_status()
 
-        if not all_posts:
-            return {"social_data": {"mention_count": 0, "status": "no posts found"}}
+        messages = resp.json().get("messages", [])
+        if not messages:
+            return {"social_data": {"mention_count": 0, "status": "no messages"}}
 
-        # Sentiment via FinBERT (batch)
-        texts = [f"{p['title']}. {p['text']}" for p in all_posts]
-        sentiments = batch_score(texts)
-        for post, sent in zip(all_posts, sentiments):
-            post["sentiment"] = sent["label"]
-            post["sentiment_score"] = sent["score"]
+        posts = []
+        native_bull = 0
+        native_bear = 0
 
-        avg_sentiment = sum(s["score"] for s in sentiments) / len(sentiments)
-        total_engagement = sum(p["score"] + p["num_comments"] for p in all_posts)
+        for msg in messages:
+            body = msg.get("body", "")
+            # StockTwits users can self-tag Bullish/Bearish
+            sentiment_tag = (msg.get("entities", {}) or {}).get("sentiment") or {}
+            tag = (sentiment_tag.get("basic") or "").lower()
+            if tag == "bullish":
+                native_bull += 1
+            elif tag == "bearish":
+                native_bear += 1
+
+            posts.append({
+                "body": body[:300],
+                "user": msg.get("user", {}).get("username"),
+                "created": msg.get("created_at"),
+                "native_tag": tag or "none",
+                "likes": (msg.get("likes", {}) or {}).get("total", 0),
+            })
+
+        # FinBERT sentiment on message bodies (batch)
+        texts = [p["body"] for p in posts if p["body"]]
+        sentiments = batch_score(texts) if texts else []
+        avg_finbert = (
+            sum(s["score"] for s in sentiments) / len(sentiments)
+            if sentiments else 0.0
+        )
 
         # Top posts by engagement
-        top_posts = sorted(
-            all_posts, key=lambda p: p["score"] + p["num_comments"], reverse=True
-        )[:5]
+        top_posts = sorted(posts, key=lambda p: p["likes"], reverse=True)[:5]
 
         return {
             "social_data": {
-                "mention_count": len(all_posts),
-                "avg_sentiment": round(avg_sentiment, 3),
-                "total_engagement": total_engagement,
+                "mention_count": len(messages),
+                "avg_sentiment": round(avg_finbert, 3),
+                "native_bullish": native_bull,
+                "native_bearish": native_bear,
+                "native_sentiment_ratio": (
+                    round(native_bull / (native_bull + native_bear), 2)
+                    if (native_bull + native_bear) > 0 else None
+                ),
                 "top_posts": top_posts,
-                "subreddits_searched": SUBREDDITS,
-                "source": "Reddit + FinBERT",
+                "source": "StockTwits + FinBERT",
             }
         }
 

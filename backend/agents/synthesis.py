@@ -54,7 +54,7 @@ HARD RULES — VIOLATING ANY OF THESE INVALIDATES THE OUTPUT
 5. NEVER mention social media activity, follower counts, or Twitter/LinkedIn unless social_data explicitly contains it.
 6. NEVER mention insider trades unless insider_data has actual transaction counts > 0.
 7. If a peer ratio is not provided in the data, do NOT compare to it. Skip the comparison.
-8. For the bear case, use ONLY: actual data weaknesses, the risk_critique's contradictions, and standard macro risks (rates, regulation, competition).
+8. For the bear case, use ONLY: actual data weaknesses (negative growth, overvaluation, earnings misses, insider selling), and these generic risks if relevant: interest rates, regulation, competition, supply chain. NO specific historical events. NO COVID-19. NO pandemics.
 
 ═══════════════════════════════════════
 INTERPRETATION RULES (basic finance — do not violate)
@@ -71,7 +71,7 @@ INTERPRETATION RULES (basic finance — do not violate)
 ═══════════════════════════════════════
 OUTPUT FORMAT
 ═══════════════════════════════════════
-
+CRITICAL REMINDER: Do NOT mention COVID-19, the pandemic, 2020, lockdowns, or any historical event not explicitly in the data above. The bear case must use ONLY weaknesses visible in the numbers (negative growth, high P/E, earnings misses, insider selling) plus generic risks (competition, regulation, interest rates). Mentioning COVID-19 invalidates the entire output.
 Return ONLY valid JSON, no preamble:
 {{
   "bull_case": ["specific argument with real number 1", "specific argument with real number 2", "specific argument with real number 3"],

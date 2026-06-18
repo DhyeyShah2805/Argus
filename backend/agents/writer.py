@@ -60,7 +60,7 @@ REPORT STRUCTURE (use these EXACT sections, in order)
 4. `## Financial Health` — Markdown table comparing AAPL to peer averages from competitor data
 5. `## Recent Earnings` — bullet list from earnings data. DO NOT duplicate quarters. DO NOT invent quarters.
 6. `## Filings & Disclosures` — bullet list of key items from the 10-K/10-Q summary. ALWAYS include the actual content. Never write "omitted" or "see above".
-7. `## Market Sentiment` with `### News` and `### Social Media` subsections
+7. `## Market Sentiment` with `### News` 
 8. `## Insider Activity` — Report the EXACT insider data provided in the INSIDER ACTIVITY section above. If it shows buy/sell counts and a signal, you MUST state them (e.g. "Insiders sold 880,558 shares across 35 transactions vs 272,855 bought across 5 — signal: cluster selling"). ONLY write "No notable insider activity in the last 90 days" if the data literally says "No insider transactions."
 9. `## Competitive Positioning` — Markdown table using EXACT ticker names from competitor data
 10. `## Risk Factors & Critique` — bullet list of specific risks from the risk critique

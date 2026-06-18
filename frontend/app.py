@@ -89,7 +89,6 @@ with st.sidebar:
        - Filings (SEC EDGAR)
        - Financials (yfinance)
        - News (Tavily + FinBERT)
-       - Social (Reddit + FinBERT)
        - Earnings
        - Insider trading
        - Competitors
@@ -139,7 +138,7 @@ if ticker:
 
 # ─── Run Research ─────────────────────────────────────────────────
 if run_button and ticker:
-    with st.spinner(f"7 agents researching {ticker} in parallel... (~1-2 min)"):
+    with st.spinner(f"6 agents researching {ticker} in parallel... (~1-2 min)"):
         try:
             response = requests.post(
                 f"{BACKEND_URL}/research",

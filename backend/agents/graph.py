@@ -19,7 +19,6 @@ from backend.agents.writer import report_writer
 from backend.sub_agents.filings import filings_agent
 from backend.sub_agents.financials import financials_agent
 from backend.sub_agents.news import news_agent
-from backend.sub_agents.social import social_agent
 from backend.sub_agents.earnings import earnings_agent
 from backend.sub_agents.insider import insider_agent
 from backend.sub_agents.competitor import competitor_agent
@@ -51,7 +50,6 @@ def build_graph():
     graph.add_node("filings", filings_agent)
     graph.add_node("financials", financials_agent)
     graph.add_node("news", news_agent)
-    graph.add_node("social", social_agent)
     graph.add_node("earnings", earnings_agent)
     graph.add_node("insider", insider_agent)
     graph.add_node("competitor", competitor_agent)
@@ -60,7 +58,7 @@ def build_graph():
     graph.set_entry_point("orchestrator")
 
     # Fan out — orchestrator → all 7 sub-agents in parallel
-    for sub in ["filings", "financials", "news", "social",
+    for sub in ["filings", "financials", "news",
                 "earnings", "insider", "competitor"]:
         graph.add_edge("orchestrator", sub)
         graph.add_edge(sub, "synthesis")   # all converge to synthesis

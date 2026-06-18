@@ -60,12 +60,25 @@ def earnings_agent(state: ResearchState) -> dict:
                 continue
             seen_quarters.add(quarter_key)
             
+            reported = float(row.get("Reported EPS")) if row.get("Reported EPS") is not None else None
+            estimate = float(row.get("EPS Estimate")) if row.get("EPS Estimate") is not None else None
+
+            # Recompute surprise ourselves — yfinance's Surprise(%) divides by the
+            # signed estimate, which explodes/flips sign when estimates are negative
+            # (e.g. Boeing). Use abs() in the denominator to keep direction correct,
+            # and cap extreme values that occur when the estimate is near zero.
+            if reported is not None and estimate is not None and estimate != 0:
+                raw = ((reported - estimate) / abs(estimate)) * 100
+                surprise_pct = round(max(-999, min(999, raw)), 2)
+            else:
+                surprise_pct = None
+
             earnings_summary.append({
                 "date": str(date.date()),
                 "quarter": quarter_key,
-                "reported_eps": float(row.get("Reported EPS", 0)) if row.get("Reported EPS") else None,
-                "estimated_eps": float(row.get("EPS Estimate", 0)) if row.get("EPS Estimate") else None,
-                "surprise_pct": float(row.get("Surprise(%)", 0)) if row.get("Surprise(%)") else None,
+                "reported_eps": reported,
+                "estimated_eps": estimate,
+                "surprise_pct": surprise_pct,
             })
 
         # LLM tone analysis
