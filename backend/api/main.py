@@ -5,13 +5,22 @@ from dotenv import load_dotenv
 load_dotenv()
 
 import logging
-from fastapi import FastAPI, HTTPException
+from fastapi import FastAPI, HTTPException, Request
 from fastapi.middleware.cors import CORSMiddleware
 from pydantic import BaseModel
 from backend.agents.graph import run_research
+from slowapi import Limiter, _rate_limit_exceeded_handler
+from slowapi.util import get_remote_address
+from slowapi.errors import RateLimitExceeded
+
+limiter = Limiter(key_func=get_remote_address)
 
 logging.basicConfig(level=logging.INFO)
 app = FastAPI(title="AI Trading Research Agent", version="1.0.0")
+
+# ── Rate limiting ──
+app.state.limiter = limiter
+app.add_exception_handler(RateLimitExceeded, _rate_limit_exceeded_handler)
 
 app.add_middleware(
     CORSMiddleware,
@@ -32,14 +41,16 @@ def health():
 
 
 @app.post("/research")
-async def research(request: ResearchRequest):
-    if not request.ticker.strip():
+@limiter.limit("5/minute")
+@limiter.limit("30/hour")
+async def research(request: Request, body: ResearchRequest):
+    if not body.ticker.strip():
         raise HTTPException(status_code=400, detail="Ticker required")
 
     try:
-        state = await run_research(request.ticker, request.context)
+        state = await run_research(body.ticker, body.context)
         return {
-            "ticker": request.ticker.upper(),
+            "ticker": body.ticker.upper(),
             "report": state["final_report"],
             "metadata": state["report_metadata"],
             "thesis": state["thesis"],
@@ -54,7 +65,6 @@ async def research(request: ResearchRequest):
                 "mention_count": state.get("social_data", {}).get("mention_count"),
             },
             "insider_signal": state.get("insider_data", {}).get("signal"),
-            # ── NEW: expose peers + earnings for the dashboard tables ──
             "peers": state.get("competitor_data", {}).get("peers", []),
             "peer_avg_pe": state.get("competitor_data", {}).get("avg_peer_pe"),
             "earnings": state.get("earnings_data", {}).get("recent_earnings", []),
